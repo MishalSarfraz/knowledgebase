@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type RouteContext = {
   params: Promise<{ fileId: string }>;
@@ -7,6 +8,8 @@ type RouteContext = {
 
 export async function GET(_request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { fileId } = await context.params;
 
     const fileRecord = await db.file.findUnique({

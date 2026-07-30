@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type RouteContext = {
   params: Promise<{ answerId: string }>;
@@ -7,6 +8,8 @@ type RouteContext = {
 
 export async function PUT(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { answerId } = await context.params;
     const { content } = await request.json();
 
@@ -36,6 +39,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
 export async function DELETE(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { answerId } = await context.params;
 
     const answer = await db.answer.delete({

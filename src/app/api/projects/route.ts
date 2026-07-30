@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function GET() {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const projects = await db.project.findMany({
       orderBy: {
         name: 'asc',
@@ -17,6 +20,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { name } = await request.json();
 
     if (!name || typeof name !== 'string' || name.trim() === '') {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 import fs from 'fs';
 import path from 'path';
 
@@ -9,6 +10,8 @@ type RouteContext = {
 
 export async function GET(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
 
     const project = await db.project.findUnique({
@@ -36,6 +39,8 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function PUT(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
     const { name } = await request.json();
 
@@ -65,6 +70,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
 export async function DELETE(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
 
     // Fetch all files associated with this project so we can delete them from disk

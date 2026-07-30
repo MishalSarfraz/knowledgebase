@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 import { deleteFile } from '@/lib/storage';
 
 type RouteContext = {
@@ -8,6 +9,8 @@ type RouteContext = {
 
 export async function PUT(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { fileId } = await context.params;
     const { name } = await request.json();
 
@@ -29,6 +32,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
 export async function DELETE(_request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { fileId } = await context.params;
 
     const fileRecord = await db.file.findUnique({

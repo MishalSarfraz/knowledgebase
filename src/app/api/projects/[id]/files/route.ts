@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 import { uploadFile } from '@/lib/storage';
 
 type RouteContext = {
@@ -8,6 +9,8 @@ type RouteContext = {
 
 export async function GET(_request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
 
     const files = await db.file.findMany({
@@ -26,6 +29,8 @@ export async function GET(_request: Request, context: RouteContext) {
 
 export async function POST(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
     const formData = await request.formData();
     const file = formData.get('file') as File | null;

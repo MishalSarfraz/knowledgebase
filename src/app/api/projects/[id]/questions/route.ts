@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -7,6 +8,8 @@ type RouteContext = {
 
 export async function GET(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
 
     const questions = await db.question.findMany({
@@ -32,6 +35,8 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function POST(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { id } = await context.params;
     const { title, description } = await request.json();
 

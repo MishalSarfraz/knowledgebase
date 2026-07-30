@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 type RouteContext = {
   params: Promise<{ id: string; questionId: string }>;
@@ -7,6 +8,8 @@ type RouteContext = {
 
 export async function GET(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { questionId } = await context.params;
 
     const question = await db.question.findUnique({
@@ -33,6 +36,8 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function PUT(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { questionId } = await context.params;
     const { title, description } = await request.json();
 
@@ -57,6 +62,8 @@ export async function PUT(request: Request, context: RouteContext) {
 
 export async function DELETE(request: Request, context: RouteContext) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { questionId } = await context.params;
 
     await db.question.delete({

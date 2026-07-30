@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { requireAuth } from '@/lib/api-auth';
 
 export async function GET(request: Request) {
   try {
+    const authError = await requireAuth();
+    if (authError) return authError;
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q') || '';
 
