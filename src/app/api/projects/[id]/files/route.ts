@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { uploadFile } from '@/lib/r2';
+import { uploadFile } from '@/lib/storage';
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -37,17 +37,14 @@ export async function POST(request: Request, context: RouteContext) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uniqueId = crypto.randomUUID();
     const safeName = file.name;
-    const key = `${uniqueId}-${safeName}`;
-
-    await uploadFile(key, buffer, file.type || 'application/octet-stream');
+    const { url } = await uploadFile(safeName, buffer, file.type || 'application/octet-stream');
 
     const fileRecord = await db.file.create({
       data: {
         name: safeName,
         originalName: safeName,
-        filePath: key,
+        filePath: url,
         mimeType: file.type || 'application/octet-stream',
         size: file.size,
         projectId: id,

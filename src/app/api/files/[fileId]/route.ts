@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { deleteFile } from '@/lib/r2';
+import { deleteFile } from '@/lib/storage';
 
 type RouteContext = {
   params: Promise<{ fileId: string }>;
@@ -39,10 +39,13 @@ export async function DELETE(_request: Request, context: RouteContext) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
-    try {
-      await deleteFile(fileRecord.filePath);
-    } catch (err) {
-      console.error('Failed to delete file from R2:', err);
+    const key = fileRecord.filePath.split('/f/').pop();
+    if (key) {
+      try {
+        await deleteFile(key);
+      } catch (err) {
+        console.error('Failed to delete file from Uploadthing:', err);
+      }
     }
 
     await db.file.delete({
