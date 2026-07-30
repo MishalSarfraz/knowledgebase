@@ -76,7 +76,7 @@ openssl rand -base64 32
 
 ## 5. Environment Variables
 
-Set these in your `.env` file (local) or Vercel dashboard:
+Set these in your `.env` file (local) or Vercel dashboard: 
 
 | Variable | Where to get it |
 |---|---|
