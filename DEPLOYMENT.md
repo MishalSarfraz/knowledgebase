@@ -28,11 +28,7 @@ Neon provides a free serverless PostgreSQL database.
    - Click **"Create project"**
 3. After creation, you'll see a connection string:
 
-   ```
-   postgresql://user:password@ep-xxxx.us-east-2.aws.neon.tech/knowledgebase?sslmode=require
-   ```
 
-postgresql://neondb_owner:npg_QvAyLDRes8Y1@ep-nameless-cake-ayhty795.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require
 4. Copy this string — you'll use it as `DATABASE_URL`
 
 > **Note**: For the free tier, the database will auto-pause after 5 minutes of inactivity. This is fine for development but for production you may want to upgrade.
