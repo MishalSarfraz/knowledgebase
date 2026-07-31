@@ -16,7 +16,7 @@ export default function SignInPage() {
             <p className="text-sm text-muted-foreground mt-1">Sign in with your Google account to continue</p>
           </div>
           <button
-            onClick={() => signIn('google', { redirectTo: '/' })}
+            onClick={() => signIn('google', { callbackUrl: '/' })}
             className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-border rounded-lg text-sm font-medium hover:bg-secondary transition-all-cursor cursor-pointer"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">

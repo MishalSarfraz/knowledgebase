@@ -38,19 +38,30 @@ Setting up and deploying the Internal Knowledge Base to Vercel with PostgreSQL (
 4. Click **"Create Credentials"** → **"OAuth 2.0 Client ID"**
 5. Configure the consent screen:
    - **User Type**: External
+   - **Publishing status**: **In production** (Testing mode blocks non-test users)
    - Fill required fields (app name, support email)
-   - Add your email as a test user
-6. Back in **Credentials**, create another **OAuth 2.0 Client ID** (Web application)
-7. Under **"Authorized redirect URIs"**, add:
+6. Back in **Credentials**, create **OAuth 2.0 Client ID** (Web application)
+7. Under **"Authorized redirect URIs"**, add the **exact full callback URLs** (no trailing slash):
 
    ```
    http://localhost:3000/api/auth/callback/google
    https://your-app-name.vercel.app/api/auth/callback/google
    ```
 
+   ⚠️ Google requires an **exact match**. A redirect URI like `https://your-app.vercel.app/` (with only a trailing slash) will NOT work and causes `access blocked: this app request is invalid`.
+
 8. Click **"Create"** and copy:
    - **Client ID** → `AUTH_GOOGLE_ID`
    - **Client Secret** → `AUTH_GOOGLE_SECRET`
+
+### ⚠️ Access blocked / Google sign-in fails?
+
+Check, in order:
+
+1. **Redirect URI exact match** — the URI in Google Console must equal your URL + `/api/auth/callback/google`, with no trailing slash.
+2. **App publishing status** — must be **In production** (not Testing), otherwise only your test users can sign in.
+3. **`NEXTAUTH_URL`** — must match your Vercel URL exactly, **no trailing slash**.
+4. **All env vars set** — `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `DATABASE_URL`.
 
 ---
 
